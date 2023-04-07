@@ -2,11 +2,11 @@
 // @id             iitc-plugin-portal-highlighter-uniques-opacity@xificurk
 // @name           IITC plugin: Highlight unique visits/captures using opacity
 // @category       Highlighter
-// @version        0.2.1.20230304.150308
+// @version        0.2.1.20230407.0622
 // @namespace      https://github.com/xificurk/iitc-plugins
 // @updateURL      https://raw.githubusercontent.com/xificurk/iitc-plugins/master/dist/portal-highlighter-uniques-opacity.meta.js
 // @downloadURL    https://raw.githubusercontent.com/xificurk/iitc-plugins/master/dist/portal-highlighter-uniques-opacity.user.js
-// @description    [xificurk-2023-03-04-150308] Use stroke and fill opacity to denote player's unique visits and captures. Requires uniques plugin.
+// @description    [xificurk-2023-04-07.0622] Use stroke and fill opacity to denote player's unique visits and captures. Requires uniques plugin.
 // @include        https://intel.ingress.com/*
 // @include        http://intel.ingress.com/*
 // @match          https://intel.ingress.com/*
@@ -43,15 +43,8 @@ window.plugin.portalHighlighterUniquesOpacity = function () {};
 
 
 window.plugin.portalHighlighterUniquesOpacity.highlight = function(data, styles) {
-  var portalData = data.portal.options.ent[2]
-  var uniqueInfo = null;
-
-  if (portalData[18]) {
-    uniqueInfo = {
-      captured: ((portalData[18] & 0b10) !== 0),
-      visited: ((portalData[18] & 0b11) !== 0)
-    };
-  }
+  var guid = data.portal.options.ent[0];
+  var uniqueInfo = window.plugin.uniques.uniques[guid];
 
   var style = {};
 
@@ -118,6 +111,11 @@ window.plugin.portalHighlighterUniquesOpacity.highlighterInverted = {
 
 
 var setup = function() {
+  if(window.plugin.uniques === undefined) {
+    alert("'Portal Highlighter Uniques Opacity' requires 'uniques'");
+    return;
+  }
+
   window.addPortalHighlighter('Uniques (opacity)', window.plugin.portalHighlighterUniquesOpacity.highlighter);
   window.addPortalHighlighter('Uniques (opacity inverted)', window.plugin.portalHighlighterUniquesOpacity.highlighterInverted);
 }
